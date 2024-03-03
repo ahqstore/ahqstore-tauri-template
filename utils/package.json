@@ -1,0 +1,9 @@
+{
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "^20.11.24"
+  },
+  "dependencies": {
+    "octokit": "^3.1.2"
+  }
+}
