@@ -1,0 +1,102 @@
+name: Publish App
+
+permissions: write-all
+
+on:
+  push:
+
+jobs:
+  create_release:
+    name: Create a release
+
+    runs-on: ubuntu-latest
+
+    outputs:
+      r_id: ${{ steps.r_id.outputs.r_id }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Nodejs
+        uses: actions/setup-node@v4
+
+      - name: Install PNPM
+        run: npm i -g pnpm
+
+      - name: Install Utils Deps
+        run: pnpm install
+        working-directory: utils
+
+      - name: Create Release
+        id: r_id
+        run: node release >> "$GITHUB_OUTPUT"
+        working-directory: utils
+        env:
+          REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build:
+    needs: [create_release]
+
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+
+    name: "Build app on ${{ matrix.os }}"
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Nodejs
+        uses: actions/setup-node@v4
+
+      - name: Install PNPM
+        run: npm i -g pnpm
+
+      - name: Install Deps
+        run: pnpm install
+
+      - name: Build & Publish
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          releaseId: ${{ needs.create_release.outputs.r_id }}
+
+  push_to_ahqstore:
+    needs: [create_release, build]
+    name: Generate AHQ Store Binary
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v4
+
+      - name: Install AHQ Store CLI
+        run: npm i -g pnpm @ahqstore/cli
+
+      - name: Build
+        run: ahqstore build
+        env:
+          RELEASE_ID: ${{ needs.create_release.outputs.r_id }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+
+      - name: Install Utils Deps
+        run: pnpm install
+        working-directory: utils
+
+      - name: Create Release
+        id: r_id
+        run: node undraft
+        working-directory: utils
+        env:
+          R_ID: ${{ needs.create_release.outputs.r_id }}
+          REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

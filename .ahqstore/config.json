@@ -1,0 +1,38 @@
+{
+  "8LmFkl89xtm84WvYaIkL": {
+    "appId": "8LmFkl89xtm84WvYaIkL",
+    "appShortcutName": "AHQ Store Tauri Template",
+    "appDisplayName": "Template for Tauri",
+    "authorId": "9MXn6dqO0qaUiqYDiaPoV5k3owd2",
+    "description": "A sample tauri app",
+    "repo": {
+      "author": "ahqstore",
+      "repo": "ahqstore-tauri-template"
+    },
+    "platform": {
+      "installType": "Both",
+      "win32Platform": "WindowsInstallerMsi",
+      "linuxPlatform": "LinuxAppImage",
+      "win32Options": {
+        "deps": [],
+        "zip_file_exec": null,
+        "exe_installer_args": []
+      },
+      "linuxOptions": {
+        "deps": []
+      }
+    },
+    "finder": {
+      "windowsFinder": {
+        "startsWith": "",
+        "contains": "",
+        "endsWith": ".msi"
+      },
+      "linuxFinder": {
+        "startsWith": "",
+        "contains": "",
+        "endsWith": ".AppImage"
+      }
+    }
+  }
+}
