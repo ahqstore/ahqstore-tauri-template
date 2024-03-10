@@ -92,19 +92,8 @@ jobs:
       - name: Setup NodeJS
         uses: actions/setup-node@v4
 
-      - name: Install pnpm
-        run: npm i -g pnpm
-
-      - name: Build
-        uses: ahqstore/upload-app@v0.1.0
-        with:
-          release: ${{ needs.create_release.outputs.r_id }}
-          upload: true
-        env:
-          GH_TOKEN: ${{ secrets.PAT_G_H }}
-
       - name: Install Utils Deps
-        run: pnpm install
+        run: npm i -g pnpm; pnpm install
         working-directory: utils
 
       - name: Create Release
@@ -115,3 +104,11 @@ jobs:
           R_ID: ${{ needs.create_release.outputs.r_id }}
           REPO: ${{ github.repository }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        uses: ahqstore/upload-app@v0.1.0
+        with:
+          release: ${{ needs.create_release.outputs.r_id }}
+          upload: true
+        env:
+          GH_TOKEN: ${{ secrets.PAT_G_H }}
