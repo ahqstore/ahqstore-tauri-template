@@ -92,15 +92,16 @@ jobs:
       - name: Setup NodeJS
         uses: actions/setup-node@v4
 
-      - name: Install AHQ Store CLI
-        run: npm i -g pnpm @ahqstore/cli
+      - name: Install pnpm
+        run: npm i -g pnpm
 
       - name: Build
-        run: ahqstore build
+        uses: ahqstore/upload-app@v0.1.0
+        with:
+          release: ${{ needs.create_release.outputs.r_id }}
+          upload: true
         env:
-          RELEASE_ID: ${{ needs.create_release.outputs.r_id }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
+          GH_TOKEN: ${{ secrets.PAT_G_H }}
 
       - name: Install Utils Deps
         run: pnpm install

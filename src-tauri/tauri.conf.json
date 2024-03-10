@@ -6,8 +6,7 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "ahqstore-tauri-template",
-    "version": "0.0.0"
+    "productName": "ahqstore-tauri-template"
   },
   "tauri": {
     "allowlist": {
